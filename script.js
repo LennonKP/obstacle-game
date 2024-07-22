@@ -177,7 +177,7 @@ startButton.addEventListener("click", () => {
     const maxScoreElement = document.createElement('div');
     maxScoreElement.id = 'maxScore';
     maxScoreElement.style.position = 'absolute';
-    maxScoreElement.style.top = '20px';
+    maxScoreElement.style.top = '25px';
     maxScoreElement.style.left = '10px';
     document.body.appendChild(maxScoreElement);
 
