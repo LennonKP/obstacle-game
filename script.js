@@ -1,7 +1,6 @@
 const startButton = document.getElementById("startButton") 
 
 class Game {
-    ACCELERATION = 0.01
     constructor() {
         startButton.style.display = "none"
         this.grid = document.getElementById('grid');
@@ -9,6 +8,7 @@ class Game {
         this.gameAudio = new Audio("./audio-jogo.mp3")
         this.fimAudio = new Audio("./fim.mp3")
         this.character = new Character();
+        this.level = 1
         this.grid.appendChild(this.character.element);
         this.scoreElement = document.getElementById('score');
         this.maxScoreElement = document.getElementById('maxScore');
@@ -87,6 +87,10 @@ class Game {
     updateScore() {
         this.score += 1;
         this.scoreElement.innerText = `Score: ${this.score}`;
+        if (this.score % 500 == 0) {
+            this.level++
+            console.log(this.level)
+        }
     }
 
     gameOver() {
@@ -117,7 +121,7 @@ class Game {
         }
 
         lanesWithObstacles.forEach((lane) => {
-            const obstacle = new Obstacle(lane)
+            const obstacle = new Obstacle(lane, this.level)
             this.grid.appendChild(obstacle.element)
         })
     }
@@ -147,10 +151,15 @@ class Character {
 }
 
 class Obstacle {
-    constructor(lane) {
+    constructor(lane, level) {
         this.element = document.createElement('div');
         this.element.classList.add('obstacle');
-        this.element.style.animation = `moveObstacle 2s linear`;
+        let seconds = 2 - (level * 0.1)
+        if (seconds <= 0.5) {
+            seconds = 0.5
+        }
+
+        this.element.style.animation = `moveObstacle ${seconds}s linear`;
         this.element.style.gridColumn = lane;
         this.element.style.gridRow = 1;
         this.element.addEventListener('animationend', () => this.element.remove());
