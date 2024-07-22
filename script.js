@@ -1,32 +1,49 @@
+const startButton = document.getElementById("startButton") 
+
 class Game {
     ACCELERATION = 0.01
     constructor() {
+        startButton.style.display = "none"
         this.grid = document.getElementById('grid');
+        this.grid.style.display = "grid"
+        this.gameAudio = new Audio("./audio-jogo.mp3")
+        this.fimAudio = new Audio("./fim.mp3")
         this.character = new Character();
         this.grid.appendChild(this.character.element);
         this.scoreElement = document.getElementById('score');
         this.maxScoreElement = document.getElementById('maxScore');
-        if (localStorage.getItem("maxScore") == 'undefined') {
+        if (localStorage.getItem("maxScore") == 'undefined' || !localStorage.getItem("maxScore")) {
             localStorage.setItem("maxScore", 0)
         }
+        
         this.initialize();
     }
 
     initialize(isRestarting = false) {
         if (isRestarting) {
             this.removeObstacles();
+            const restartButton = document.getElementById("restartButton")
+            restartButton.remove()
+        }
+        if (parseInt(localStorage.getItem("maxScore")) < this.score) {
+            localStorage.setItem("maxScore", this.score)
         }
         this.score = 0;
+        this.maxScoreElement.innerText = `Max score: ${localStorage.getItem("maxScore")}`
         this.addEventListeners();
         this.startGameLoop();
     }
 
     startGameLoop() {
+        this.audioLoop = setInterval(() => this.gameAudio.play(), 10)
         this.gameInterval = setInterval(() => this.updateGame(), 10);
         this.objectSpawnInterval = setInterval(() => this.spawnObstacle(), 1000);
     }
 
     stopGameLoop() {
+        this.gameAudio.pause()
+        clearInterval(this.audioLoop)
+        this.fimAudio.play()
         clearInterval(this.gameInterval);
         clearInterval(this.objectSpawnInterval);
     }
@@ -80,9 +97,11 @@ class Game {
             obstacle.style.animationPlayState = 'paused';
         }
 
-        if (parseInt(localStorage.getItem("maxScore")) < this.score) {
-            localStorage.setItem("maxScore", this.score)
-        }
+        const restartButton = document.createElement("button")
+        restartButton.innerText = "Restart..."
+        restartButton.id = "restartButton"
+        restartButton.onclick = () => this.initialize(true)
+        this.grid.appendChild(restartButton)
     }
 
     spawnObstacle() {
@@ -138,7 +157,8 @@ class Obstacle {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+
+startButton.addEventListener("click", () => {
     const scoreElement = document.createElement('div');
     scoreElement.id = 'score';
     scoreElement.style.position = 'absolute';
@@ -154,3 +174,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     new Game();
 });
+
