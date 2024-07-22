@@ -1,0 +1,58 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+}
+
+.game-container {
+  position: relative;
+  width: 300px;
+  height: 500px;
+  border: 2px solid #000;
+  background-color: #fff;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(10, 50px);
+  justify-items: center;
+}
+
+.game-container::before,
+.game-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: black;
+}
+
+.game-container::before { left: 33.33%; }
+.game-container::after  { left: 66.66%; }
+
+.character {
+  grid-row: 10;
+  width: 40px;
+  height: 40px;
+  background-color: #333;
+}
+
+.obstacle {
+  width: 40px;
+  height: 40px;
+  background-color: #f00;
+  position: relative;
+}
+
+@keyframes moveObstacle {
+  0% {
+      transform: translateY(-40px);
+  }
+  100% {
+      transform: translateY(500px);
+  }
+}
+
